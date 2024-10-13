@@ -157,3 +157,21 @@ class Corpus:
 
         true_labels, predict_labels = self.__get_label_list()
         return f1_score(true_labels, predict_labels, average=option)
+
+    def confusion_matrix(self) -> None:
+        true_labels, predict_labels = self.__get_label_list()
+
+        true_labels = np.array(true_labels)
+        predict_labels = np.array(predict_labels)
+        cm = confusion_matrix(true_labels, predict_labels)
+
+        labels = np.unique(true_labels)
+
+        fig, ax = plt.subplots(figsize=(8, 8))
+        sns.heatmap(cm, annot=True, ax=ax, cmap="Blues", fmt='g', xticklabels=labels, yticklabels=labels)
+
+        ax.set_title('Confusion Matrix of upos')
+        ax.set_xlabel('Predicted Labels')
+        ax.set_ylabel('True Labels')
+
+        plt.show()
