@@ -140,10 +140,8 @@ class Corpus:
 
         return correct_sentence / len(self)
 
-    def compute_f1(self, option: str) -> float:
-        if option not in ['micro', 'macro', 'weighted']:
-            raise ValueError("Valid options: micro, macro, weighted.")
-
+    def __get_label_list(self) -> Tuple[list, list]:
+        """Get true label list and prediction label list"""
         true_labels = []
         predict_labels = []
         for sentence in self.sentences:
@@ -151,6 +149,11 @@ class Corpus:
             predict_labels_sentence = [token.spacy_token.pos_ for token in sentence.token_pairs]
             true_labels.extend(true_labels_sentence)
             predict_labels.extend(predict_labels_sentence)
+        return true_labels, predict_labels
 
+    def compute_f1(self, option: str) -> float:
+        if option not in ['micro', 'macro', 'weighted']:
+            raise ValueError("Valid options: micro, macro, weighted.")
+
+        true_labels, predict_labels = self.__get_label_list()
         return f1_score(true_labels, predict_labels, average=option)
-
